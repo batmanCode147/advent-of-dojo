@@ -9,7 +9,7 @@ type Position =
       y : int }
     static member Zero = { x = 0; y = 0 }
 
-let updatePosition (current : Position) (delta : Move) : Position =
+let updatePosition (delta : Move) (current : Position) : Position =
     match delta with
     | North -> { current with y = current.y + 1 }
     | South -> { current with y = current.y - 1 }
@@ -29,7 +29,7 @@ let parse (input:string) : list<Move> =
 
 let part1 (input:list<Move>) : int =
     (Position.Zero, input)
-    ||> Seq.scan updatePosition
+    ||> Seq.scan (fun position move -> position |> updatePosition move)
     |> Set.ofSeq
     |> Set.add Position.Zero
     |> Set.count
@@ -37,7 +37,7 @@ let part1 (input:list<Move>) : int =
 let part2 (input : seq<_>) : int =
     ((Position.Zero, Position.Zero), input)
     ||> Seq.scan (fun (first, second) delta ->
-        (second, updatePosition first delta)
+        (second, first |> updatePosition delta)
     )
     |> Seq.map snd
     |> Set.ofSeq 
