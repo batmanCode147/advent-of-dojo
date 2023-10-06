@@ -6,25 +6,25 @@ let md5 (input:string) : string =
         stringBuilder.Append(byte.ToString("x2")) |> ignore
     stringBuilder.ToString()
 
-let part1 (input:string) : int =
-    Seq.initInfinite(fun i ->
+let findHashWithNLeadingZeroes (input:string, n:int) : int =
+    Seq.initInfinite id
+    |> Seq.find (fun i ->
         i
+        |> sprintf "%s%i" input
+        |> md5
+        |> Seq.take n
+        |> Seq.forall ((=)'0')
     )
-    |> Seq.map (sprintf "%s%i" input) 
-    |> Seq.map(fun s ->
-        md5(s)
-        |> Seq.take(5)
-        |> Seq.forall(fun c ->
-            c = '0'
-        )
-    )
-    |> Seq.indexed
-    |> Seq.find snd
-    |> fst
+
+let part1 (input:string) : int =
+    findHashWithNLeadingZeroes(input, 5)
+
+let part2 (input:string) : int =
+    findHashWithNLeadingZeroes(input, 6)
 
 if fsi.CommandLineArgs.Length = 2 then
     fsi.CommandLineArgs[1]
-    |> part1
+    |> part2
     |> printfn "%i"
 else
     [
