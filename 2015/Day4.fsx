@@ -6,7 +6,7 @@ let md5 (input:string) : string =
         stringBuilder.Append(byte.ToString("x2")) |> ignore
     stringBuilder.ToString()
 
-let findHashWithNLeadingZeroes (input:string, n:int) : int =
+let findHashWithNLeadingZeroes (n:int) (input:string) : int =
     Seq.initInfinite id
     |> Seq.find (fun i ->
         i
@@ -16,11 +16,9 @@ let findHashWithNLeadingZeroes (input:string, n:int) : int =
         |> Seq.forall ((=)'0')
     )
 
-let part1 (input:string) : int =
-    findHashWithNLeadingZeroes(input, 5)
+let part1 = findHashWithNLeadingZeroes 5
 
-let part2 (input:string) : int =
-    findHashWithNLeadingZeroes(input, 6)
+let part2 = findHashWithNLeadingZeroes 6
 
 if fsi.CommandLineArgs.Length = 2 then
     fsi.CommandLineArgs[1]
