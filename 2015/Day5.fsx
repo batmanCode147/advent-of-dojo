@@ -1,35 +1,26 @@
-type Judgment =
-    | Naughty
-    | Nice 
-
 let parse = id
 
 let part1 (input : seq<string>) =
-    let badPatterns = ["ab";"cd";"pq";"xy"]
+    let vowels = [|'a'; 'e'; 'i'; 'o'; 'u'|]
 
-    input 
-    |> Seq.filter ( fun s ->
-        let has3vowels =
-            (
-                s
-                |> Seq.filter (function
-                    | 'a' | 'e' | 'i' | 'o' | 'u' -> true
-                    | _ -> false
-                )
-                |> Seq.length
-            ) >= 3
-        let hasDoubleChar = 
-            s 
-            |> Seq.pairwise
-            |> Seq.exists (fun (first , second) ->
-                first = second
-            )
-        
-        let hasBadPattern = 
-            badPatterns
-            |> Seq.exists (fun badS -> s.Contains(badS))
-        has3vowels && hasDoubleChar && not hasBadPattern
+    let notBad (bad:string) (input:string) = input.Contains(bad) |> not
+
+    input
+    |> Seq.filter (fun s ->
+        let vowelCount =
+            s
+            |> Seq.filter (fun c -> vowels |> Array.contains c)
+            |> Seq.length
+        vowelCount >= 3
     )
+    |> Seq.filter (
+        Seq.pairwise
+        >> Seq.exists (fun (first, second) -> first = second)
+    )
+    |> Seq.filter (notBad "ab")
+    |> Seq.filter (notBad "cd")
+    |> Seq.filter (notBad "pq")
+    |> Seq.filter (notBad "xy")
     |> Seq.length
 
 let part2 (input : seq<string>) =
