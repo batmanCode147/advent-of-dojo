@@ -15,13 +15,13 @@ let parse (input:seq<string>) : seq<Parcel> =
     )
 
 let part1 (input:seq<Parcel>) : int =
-    let area (parcel : Parcel) : int =
-        2*(parcel.Height*parcel.Width + parcel.Height * parcel.Length + parcel.Width * parcel.Length)
-    let smallest_side(parcel : Parcel) : int =
-        [ parcel.Height*parcel.Width; parcel.Height * parcel.Length; parcel.Width * parcel.Length]
-        |> List.min
+    let wrapping_paper(parcel : Parcel) : int =
+        let sides = [ parcel.Height*parcel.Width; parcel.Height * parcel.Length; parcel.Width * parcel.Length]
+        let area = 2 * Seq.sum sides
+        let smallest_side = Seq.min sides
+        area + smallest_side
     input
-    |> Seq.map (fun x -> area x + smallest_side x)
+    |> Seq.map wrapping_paper
     |> Seq.sum
 
 let part2 (input:seq<Parcel>) : int =
@@ -38,7 +38,7 @@ if fsi.CommandLineArgs.Length = 2 then
     let file = fsi.CommandLineArgs[1]
     System.IO.File.ReadAllLines(file)
     |> parse
-    |> part2
+    |> part1
     |> printfn "%i"
 else
     [
